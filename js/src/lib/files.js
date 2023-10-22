@@ -37,19 +37,23 @@ export function loadFiles() {
     }
   }
 
-  // After populating the dropdowns:
   const cachedYear = localStorage.getItem("selectedYear");
-  const cachedDay = localStorage.getItem("selectedDay");
-  const cachedPart = localStorage.getItem("selectedPart");
-
   if (cachedYear) {
     yearDropdown.value = cachedYear;
   }
+
+  const cachedDay = localStorage.getItem("selectedDay");
   if (cachedDay) {
     dayDropdown.value = cachedDay;
   }
+
+  const cachedPart = localStorage.getItem("selectedPart");
   if (cachedPart) {
     partDropdown.value = cachedPart;
+  }
+
+  if (cachedYear && cachedDay && cachedPart) {
+    loadSketch();
   }
 }
 

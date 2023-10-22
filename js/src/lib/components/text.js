@@ -21,13 +21,17 @@ export default class Text {
 
   draw() {
     let textSize = 10;
+    this.p.textSize(textSize);
+
+    this.p.strokeWeight(0);
+    this.p.stroke(0);
+    this.p.rectMode("corner");
 
     this.p.fill(bg);
-    let w = (this.prevS ?? this.s).length * (textSize / 2);
+    let w = this.p.textWidth(this.prevS ?? this.s);
     this.p.rect(this.x, this.y - textSize, w, textSize + 1);
 
     this.p.fill(255);
-    this.p.textSize(10);
     this.p.text(this.s, this.x, this.y);
 
     // save as prev to erase it later
