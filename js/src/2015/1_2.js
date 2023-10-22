@@ -24,10 +24,14 @@ export default (p) => {
   let solution;
 
   let step = () => {
-    if (index < directions.length) {
+    if (curr < 0) {
+      solution.set(`-1 @ ${index}`);
+      solution.draw();
+      p.noLoop();
+    } else if (index < directions.length) {
       curr += directions[index++];
     } else {
-      solution.set(`Final: ${curr}`);
+      solution.set(`Failed to find solution`);
       solution.draw();
       p.noLoop();
     }

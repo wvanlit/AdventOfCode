@@ -9,13 +9,13 @@
  * @param {number} y2 - The maximum bound of the world y-coordinate.
  * @param {number} cw - The canvas width.
  * @param {number} ch - The canvas height.
- * @returns An object containing the canvas x (`cx`) and y (`cy`) coordinates.
+ * @returns {{cx: number, cy: number}}An object containing the canvas x (`cx`) and y (`cy`) coordinates.
  * @example
  * const {cx, cy} = worldToCanvas(50, 50, 0, 100, 0, 100, 500, 500);
  * console.log(cx, cy); // Outputs: 250, 250
  */
 export function worldToCanvas(x, y, x1, x2, y1, y2, cw, ch) {
-    let cx = ((x - x1) / (x2 - x1)) * cw;
-    let cy = ch - ((y - y1) / (y2 - y1)) * ch;
-    return { cx, cy };
+  let cx = ((x - x1) / (x2 - x1)) * cw;
+  let cy = ch - ((y - y1) / (y2 - y1)) * ch;
+  return { cx, cy };
 }
