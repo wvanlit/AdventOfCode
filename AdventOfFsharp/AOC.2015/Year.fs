@@ -4,4 +4,5 @@ open AOC.Core.Puzzle
 
 let year : Year = Map [
     (1u, Day1.day)
+    (2u, Day2.day)
 ]

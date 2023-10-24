@@ -8,4 +8,4 @@ type Solutions = Map<uint, Year>
 let unsolved = fun input -> "TODO"
 
 // Just here to copy over
-let dayUnsolved = (unsolved, unsolved)
+let dayUnsolved : Day = (unsolved, unsolved)
