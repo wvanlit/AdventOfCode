@@ -2,7 +2,7 @@ import p5 from "p5";
 import { bg, setupCanvas, setupFrame } from "../lib/canvas";
 import Graph from "../lib/components/graph";
 import Text from "../lib/components/text";
-import input from "./inputs/2.txt?raw";
+import input from "./inputs/2.imba";
 import { getRandomColor } from "../lib/components/random_color";
 
 /**
