@@ -7,5 +7,10 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@mobily/ts-belt": "^3.13.1",
+    "@types/cli-progress": "^3.11.5",
+    "cli-progress": "^3.12.0"
   }
 }
