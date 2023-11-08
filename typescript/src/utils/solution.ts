@@ -5,20 +5,18 @@ export abstract class Solution {
   public Part2Bar: SingleBar;
 
   constructor(public year: number, public day: number) {
-    this.Part1Bar = new SingleBar(
-      {
-        format: "#1 {bar} | {value}/{total} ({percentage}%) | [{duration}s/{eta}s]",
-        barsize: 30,
-      },
-      Presets.rect
-    );
-    this.Part2Bar = new SingleBar(
-      {
-        format: "Part #2 {bar} | {value}/{total} ({percentage}%) | [{duration}s/{eta}s]",
-        barsize: 30,
-      },
-      Presets.rect
-    );
+    this.Part1Bar = new SingleBar({
+      format: "#1 {bar} {value}/{total} ({percentage}%) [{duration}s/{eta}s]",
+      barsize: 30,
+      barCompleteChar: "▰",
+      barIncompleteChar: "▱",
+    });
+    this.Part2Bar = new SingleBar({
+      format: "#2 {bar} {value}/{total} ({percentage}%) [{duration}s/{eta}s]",
+      barsize: 30,
+      barCompleteChar: "▰",
+      barIncompleteChar: "▱",
+    });
   }
 
   async execute() {

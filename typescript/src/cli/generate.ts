@@ -17,8 +17,13 @@ class Day extends Solution {
     super(${year}, ${day});
   }
 
-  async part1(input: string): Promise<string> { return "TODO"; }
-  async part2(input: string): Promise<string> { return "TODO"; }
+  async part1(input: string): Promise<string> { 
+    return "TODO"; 
+  }
+
+  async part2(input: string): Promise<string> { 
+    return "TODO"; 
+  }
 }
 
 if (import.meta.main) {
