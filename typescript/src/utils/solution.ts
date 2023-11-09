@@ -19,18 +19,18 @@ export abstract class Solution {
     });
   }
 
-  async execute() {
-    const input = await this.input();
+  async execute(quiet = false) {
+    const input = (await this.input()).trim();
 
-    this.Part1Bar.start(1, 0);
+    if (!quiet) this.Part1Bar.start(1, 0);
     const p1 = await this.part1(input);
-    this.Part1Bar.stop();
+    if (!quiet) this.Part1Bar.stop();
 
     console.log(`${this.year} ${this.day} => ${p1}`);
 
-    this.Part2Bar.start(1, 0);
+    if (!quiet) this.Part2Bar.start(1, 0);
     const p2 = await this.part2(input);
-    this.Part2Bar.stop();
+    if (!quiet) this.Part2Bar.stop();
 
     console.log(`${this.year} ${this.day} => ${p2}`);
   }
