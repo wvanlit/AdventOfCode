@@ -20,7 +20,7 @@ export abstract class Solution {
   }
 
   async execute(quiet = false) {
-    const input = (await this.input()).trim();
+    const input = await this.input();
 
     if (!quiet) this.Part1Bar.start(1, 0);
     const p1 = await this.part1(input);
@@ -35,8 +35,10 @@ export abstract class Solution {
     console.log(`${this.year} ${this.day} => ${p2}`);
   }
 
-  input() {
-    return Bun.file(`../inputs/${this.year}/${this.day}.txt`).text();
+  async input() {
+    const input = await Bun.file(`../inputs/${this.year}/${this.day}.txt`).text();
+
+    return input.trim();
   }
 
   abstract part1(input: string): Promise<string>;

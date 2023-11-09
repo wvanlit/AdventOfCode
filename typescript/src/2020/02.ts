@@ -14,10 +14,7 @@ class Day extends Solution {
   }
 
   async part1(input: string): Promise<string> {
-    const policies = input
-      .trim()
-      .split("\n")
-      .map((s) => this.parse(s));
+    const policies = input.split("\n").map((s) => this.parse(s));
 
     this.Part1Bar.setTotal(policies.length);
 
@@ -37,10 +34,7 @@ class Day extends Solution {
   }
 
   async part2(input: string): Promise<string> {
-    const policies = input
-      .trim()
-      .split("\n")
-      .map((s) => this.parse(s));
+    const policies = input.split("\n").map((s) => this.parse(s));
 
     this.Part2Bar.setTotal(policies.length);
 
