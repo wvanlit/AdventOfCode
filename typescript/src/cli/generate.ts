@@ -1,4 +1,5 @@
 import { A } from "@mobily/ts-belt";
+import { mkdir} from "fs/promises"
 
 const args = A.slice(Bun.argv, 2, 2);
 
@@ -6,6 +7,12 @@ const year = parseInt(args[0]);
 const day = parseInt(args[1]);
 const dayPadded = day.toString().padStart(2, "0");
 const file = `./src/${year}/${dayPadded}`;
+
+try{
+  await mkdir(`../inputs/${year}/`);
+}catch{};
+
+const x = await Bun.spawn(["aocdl", "-year", `${year}`, "-day", `${day}`, "-output", `../inputs/${year}/${day}.txt`, ])
 
 confirm(`Create ${file}.ts?`);
 
