@@ -25,6 +25,8 @@ export function sortMutable(arr: number[]): number[] {
   return arr.sort((a, b) => a - b);
 }
 
+export const numericCompareForSort = (a: number, b: number) => a - b;
+
 /**
  * Immutable sort, does not touch the original array
  * @returns a new array, sorted
