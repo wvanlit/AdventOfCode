@@ -5,6 +5,7 @@ namespace AdventOfCode.Extensions;
 public static class RegexExtensions
 {
     public static int AsInt(this Group group) => group.Value.ToInt();
+    public static uint AsUint(this Group group) => group.Value.ToUint();
 
     public static Dictionary<string, string> NamedGroups(this Match match)
     {
