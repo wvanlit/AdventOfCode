@@ -30,59 +30,51 @@ class Day extends Solution {
     return (diffsOf1 * diffsOf3).toString();
   }
 
-  isValid = (adapters: number[]) => {
-    if (adapters.length <= 1) return true;
+  findAllVariations(adapters: number[]) {
+    const ALLOWED_OFFSET = 3;
+    adapters.sort(numericCompareForSort);
 
-    const diff = adapters.at(-1)! - adapters.at(-2)!;
+    const start = 0;
+    const last = adapters.pop()!;
+    const target = last + 3;
 
-    if (diff < 0 && diff > 3) return false;
+    function verify(order: number[]) {
+      if (order.length <= 1 || last - order[order.length - 1] > ALLOWED_OFFSET) {
+        return false;
+      }
 
-    const diffs = window(adapters, 2).map((c) => c[1] - c[0]);
-
-    return diffs.every((i) => i > 0 && i <= 3);
-  };
-
-  isSolution = (order: number[], target: number) => {
-    if (target - order.at(-1)! > 3) {
-      return false;
+      return window(order.concat(last, target), 2)
+        .map((c) => c[1] - c[0])
+        .every((i) => i > 0 && i <= 3);
     }
 
-    const solution = order.concat(target);
-    const diffs = window(solution, 2).map((c) => c[1] - c[0]);
-
-    return diffs.every((i) => i > 0 && i <= 3);
-  };
-
-  findAllVariations(adapters: number[]) {
     let solutions: number = 0;
 
-    const target = adapters.at(-1)! + 3;
+    type State = { current: number; order: number[]; leftStartIndex: number };
 
-    const backtrack = (order: number[], options: number[]) => {
-      if (this.isSolution(order, target)) {
-        solutions++;
-        return; // Branch Done!
+    let stack: State[] = [{ current: start, order: [], leftStartIndex: 0 }];
+
+    while (stack.length > 0) {
+      const state = stack.pop()!;
+
+      if (verify(state.order)) {
+        solutions += 1;
       }
 
-      for (const option of options) {
-        order.push(option);
+      for (let i = state.leftStartIndex; i < adapters.length; i++) {
+        this.Part2Bar.increment();
 
-        // Prune invalid searches
-        if (this.isValid(order)) {
-          this.Part2Bar.increment();
-          backtrack(
-            order,
-            options.filter((i) => i !== option)
-          );
-        } else {
-          this.Part2Bar.increment(factorial(options.length - 1));
+        const option = adapters[i];
+
+        if (option - ALLOWED_OFFSET <= state.current && option - state.current > 0) {
+          stack.push({
+            current: option,
+            order: state.order.concat(option),
+            leftStartIndex: i + 1,
+          });
         }
-
-        order.pop();
       }
-    };
-
-    backtrack([0], adapters);
+    }
 
     return solutions;
   }
@@ -93,7 +85,7 @@ class Day extends Solution {
       .map((n) => parseInt(n))
       .sort(numericCompareForSort);
 
-    this.Part2Bar.setTotal(factorial(joltageAdapters.length));
+    this.Part2Bar.setTotal(joltageAdapters.length);
 
     return this.findAllVariations(joltageAdapters).toString();
   }
