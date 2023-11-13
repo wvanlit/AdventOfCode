@@ -1,3 +1,4 @@
+import { SingleBar } from "cli-progress";
 import { numericCompareForSort, window } from "../utils/array";
 import { factorial } from "../utils/math";
 import { memoize } from "../utils/memo";
@@ -48,35 +49,50 @@ class Day extends Solution {
         .every((i) => i > 0 && i <= 3);
     }
 
-    let solutions: number = 0;
-
     type State = { current: number; order: number[]; leftStartIndex: number };
+    let cache: Record<string, number> = {};
 
-    let stack: State[] = [{ current: start, order: [], leftStartIndex: 0 }];
+    function toHash(state: State) {
+      return `${state.current}_${state.leftStartIndex}`;
+    }
 
-    while (stack.length > 0) {
-      const state = stack.pop()!;
+    function findAll(state: State, pb: SingleBar): number {
+      if (cache[toHash(state)]) {
+        return cache[toHash(state)];
+      }
+
+      let solutions = 0;
+      pb.setTotal(pb.getTotal() + 1);
+      pb.increment();
 
       if (verify(state.order)) {
         solutions += 1;
       }
 
+      // Adapters left
       for (let i = state.leftStartIndex; i < adapters.length; i++) {
-        this.Part2Bar.increment();
-
         const option = adapters[i];
 
         if (option - ALLOWED_OFFSET <= state.current && option - state.current > 0) {
-          stack.push({
-            current: option,
-            order: state.order.concat(option),
-            leftStartIndex: i + 1,
-          });
+          solutions += findAll(
+            {
+              current: option,
+              order: state.order.concat(option),
+              leftStartIndex: i + 1,
+            },
+            pb
+          );
         }
       }
+
+      cache[toHash(state)] = solutions;
+
+      return solutions;
     }
 
-    return solutions;
+    let initial: State = { current: start, order: [], leftStartIndex: 0 };
+
+    return findAll(initial, this.Part2Bar);
   }
 
   async part2(input: string): Promise<string> {

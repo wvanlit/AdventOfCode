@@ -8,6 +8,6 @@ test("Part #1", async () => {
   expect(await solution.part1(input)).toBe("1920");
 });
 
-test.skip("Part #2", async () => {
-  expect(await solution.part2(input)).toBe("Solution #2");
+test("Part #2", async () => {
+  expect(await solution.part2(input)).toBe("1511207993344");
 });
