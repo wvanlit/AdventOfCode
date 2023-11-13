@@ -1,4 +1,3 @@
-import { SingleBar } from "cli-progress";
 import { numericCompareForSort, window } from "../utils/array";
 import { factorial } from "../utils/math";
 import { memoize } from "../utils/memo";
@@ -31,68 +30,72 @@ class Day extends Solution {
     return (diffsOf1 * diffsOf3).toString();
   }
 
+  isValid = (adapters: number[]) => {
+    if (adapters.length <= 1) return true;
+
+    const diff = adapters.at(-1)! - adapters.at(-2)!;
+
+    if (diff < 0 && diff > 3) return false;
+
+    const diffs = window(adapters, 2).map((c) => c[1] - c[0]);
+
+    return diffs.every((i) => i > 0 && i <= 3);
+  };
+
+  isSolution = (order: number[], target: number) => {
+    if (target - order.at(-1)! > 3) {
+      return false;
+    }
+
+    const solution = order.concat(target);
+    const diffs = window(solution, 2).map((c) => c[1] - c[0]);
+
+    return diffs.every((i) => i > 0 && i <= 3);
+  };
+
   findAllVariations(adapters: number[]) {
-    const ALLOWED_OFFSET = 3;
-    adapters.sort(numericCompareForSort);
+    const target = adapters.at(-1)! + 3;
 
-    const start = 0;
-    const last = adapters.pop()!;
-    const target = last + 3;
-
-    function verify(order: number[]) {
-      if (order.length <= 1 || last - order[order.length - 1] > ALLOWED_OFFSET) {
-        return false;
-      }
-
-      return window(order.concat(last, target), 2)
-        .map((c) => c[1] - c[0])
-        .every((i) => i > 0 && i <= 3);
-    }
-
-    type State = { current: number; order: number[]; leftStartIndex: number };
     let cache: Record<string, number> = {};
-
-    function toHash(state: State) {
-      return `${state.current}_${state.leftStartIndex}`;
+    function toHash(current: number, next: number) {
+      return `${current}_${next}`;
     }
 
-    function findAll(state: State, pb: SingleBar): number {
-      if (cache[toHash(state)]) {
-        return cache[toHash(state)];
+    const backtrack = (order: number[], options: number[]) => {
+      let solutions: number = 0;
+      let hash = toHash(order.at(-1)!, options[0]);
+
+      if (cache[hash]) {
+        return cache[hash];
       }
 
-      let solutions = 0;
-      pb.setTotal(pb.getTotal() + 1);
-      pb.increment();
-
-      if (verify(state.order)) {
-        solutions += 1;
+      if (this.isSolution(order, target)) {
+        solutions++;
       }
 
-      // Adapters left
-      for (let i = state.leftStartIndex; i < adapters.length; i++) {
-        const option = adapters[i];
+      for (const option of options.sort()) {
+        order.push(option);
 
-        if (option - ALLOWED_OFFSET <= state.current && option - state.current > 0) {
-          solutions += findAll(
-            {
-              current: option,
-              order: state.order.concat(option),
-              leftStartIndex: i + 1,
-            },
-            pb
+        // Prune invalid searches
+        if (this.isValid(order)) {
+          this.Part2Bar.increment();
+          solutions += backtrack(
+            order,
+            options.filter((i) => i !== option)
           );
+        } else {
+          this.Part2Bar.increment(factorial(options.length - 1));
         }
+
+        order.pop();
       }
 
-      cache[toHash(state)] = solutions;
+      cache[hash] = solutions;
 
       return solutions;
-    }
+    };
 
-    let initial: State = { current: start, order: [], leftStartIndex: 0 };
-
-    return findAll(initial, this.Part2Bar);
+    return backtrack([0], adapters);
   }
 
   async part2(input: string): Promise<string> {
@@ -101,7 +104,7 @@ class Day extends Solution {
       .map((n) => parseInt(n))
       .sort(numericCompareForSort);
 
-    this.Part2Bar.setTotal(joltageAdapters.length);
+    this.Part2Bar.setTotal(factorial(joltageAdapters.length));
 
     return this.findAllVariations(joltageAdapters).toString();
   }
