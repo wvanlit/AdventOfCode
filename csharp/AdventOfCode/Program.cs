@@ -10,6 +10,8 @@ var day = int.Parse(config["Day"]!);
 var inputFile = Path.Combine(config["Inputs"]!, config["Year"]!, config["day"] + ".txt");
 var input = File.ReadAllText(inputFile).Trim();
 
+var printExceptions = bool.Parse(config["PrintException"]!);
+
 AnsiConsole.MarkupLine($"\n[bold]AoC [green]{year}[/] day [blue]{day}[/][/]\n");
 
 var solutionFactory = new SolutionFactory();
@@ -23,6 +25,7 @@ try
 catch (Exception e)
 {
     AnsiConsole.MarkupLine($"[red bold]{e.Message}[/]");
+    if(printExceptions)AnsiConsole.WriteException(e);
 }
 
 AnsiConsole.WriteLine("Part 2");
@@ -33,4 +36,5 @@ try
 catch (Exception e)
 {
     AnsiConsole.MarkupLine($"[red bold]{e.Message}[/]");
+    if(printExceptions)AnsiConsole.WriteException(e);
 }
