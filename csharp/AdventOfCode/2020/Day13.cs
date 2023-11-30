@@ -1,6 +1,6 @@
+using AdventOfCode.Extensions;
 using AdventOfCode.Utils;
 using MoreLinq;
-using Spectre.Console;
 
 namespace AdventOfCode._2020;
 
@@ -19,7 +19,7 @@ public class Day13 : Solution
      */
     public override Answer Part1(string input)
     {
-        var i = input.Split("\n").ToArray();
+        var i = input.SplitLines();
         var startingTime = int.Parse(i[0]);
         var busses = i[1].Split(",").Where(s => s != "x").Select(int.Parse).ToArray();
 
@@ -45,8 +45,10 @@ public class Day13 : Solution
     public override Answer Part2(string input)
     {
         var busses = input
-            .Split("\n").ToArray()[1].Split(",")
-            .Index().Where(s => s.Value != "x")
+            .SplitLines()[1]
+            .Split(",")
+            .Index()
+            .Where(s => s.Value != "x")
             .Select(kv => (bus: int.Parse(kv.Value), offset: kv.Key))
             .ToArray();
 

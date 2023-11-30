@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using Spectre.Console;
+using AdventOfCode.Extensions;
 
 namespace AdventOfCode._2020;
 
@@ -35,14 +35,14 @@ public class Day2 : Solution
 
     public override Answer Part1(string input)
     {
-        var policies = input.Split("\n").Select(Parse).ToArray();
+        var policies = input.SplitLines().Select(Parse).ToArray();
 
         return policies.Count(p => p.ValidPart1());
     }
 
     public override Answer Part2(string input)
     {
-        var policies = input.Split("\n").Select(Parse).ToArray();
+        var policies = input.SplitLines().Select(Parse).ToArray();
 
         return policies.Count(p => p.ValidPart2());
     }

@@ -1,6 +1,6 @@
+using AdventOfCode.Extensions;
 using AdventOfCode.Utils.Spatial;
 using MoreLinq;
-using Spectre.Console;
 
 namespace AdventOfCode._2020;
 
@@ -11,7 +11,7 @@ public class Day17 : Solution
     {
         var grid = new SparseGrid3D<bool>();
 
-        foreach (var (i, row) in input.Split("\n").Index())
+        foreach (var (i, row) in input.SplitLines().Index())
         {
             foreach (var (j, cell) in row.ToCharArray().Index())
             {
@@ -26,7 +26,7 @@ public class Day17 : Solution
     {
         var grid = new SparseGrid4D<bool>();
 
-        foreach (var (i, row) in input.Split("\n").Index())
+        foreach (var (i, row) in input.SplitLines().Index())
         {
             foreach (var (j, cell) in row.ToCharArray().Index())
             {

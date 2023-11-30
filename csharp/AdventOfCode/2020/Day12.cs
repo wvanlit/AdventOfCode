@@ -1,3 +1,4 @@
+using AdventOfCode.Extensions;
 using AdventOfCode.Utils;
 using Spectre.Console;
 
@@ -31,7 +32,7 @@ public class Day12 : Solution
 
     public override Answer Part1(string input)
     {
-        var actions = input.Split("\n").Select(Action.Parse).ToArray();
+        var actions = input.SplitLines().Select(Action.Parse).ToArray();
         var state = new ShipState();
 
         state = actions.Aggregate(state, (current, a) => a.Type switch
@@ -112,7 +113,7 @@ public class Day12 : Solution
 
     public override Answer Part2(string input)
     {
-        var actions = input.Split("\n").Select(Action.Parse).ToArray();
+        var actions = input.SplitLines().Select(Action.Parse).ToArray();
         var state = new ShipWithWaypointState();
 
         foreach (var action in actions)

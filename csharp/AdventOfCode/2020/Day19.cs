@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 using MoreLinq.Extensions;
-using Spectre.Console;
 
 namespace AdventOfCode._2020;
 
@@ -85,7 +84,7 @@ public class Day19 : Solution
 
     public override Answer Part1(string input)
     {
-        var parts = input.Split("\n\n");
+        var parts = input.SplitGroups();
 
         var rules = parts[0]
             .Trim()
@@ -96,7 +95,7 @@ public class Day19 : Solution
                 keySelector: tuple => tuple.index,
                 elementSelector: tuple => tuple.rule);
 
-        var inputs = parts[1].Split("\n").ToArray();
+        var inputs = parts[1].SplitLines().ToArray();
 
         var pattern = $"^{rules[0].GeneratePattern(rules)}$";
 
@@ -109,7 +108,7 @@ public class Day19 : Solution
             .Replace("8: 42", "8: \"TODO\"")
             .Replace("11: 42 31", "11: \"TODO\"");
 
-        var parts = input.Split("\n\n");
+        var parts = input.SplitGroups();
 
         var rules = parts[0]
             .Trim()
@@ -137,7 +136,7 @@ public class Day19 : Solution
             //A conditional that checks if the '42' stack is empty. If not, it fails the match
             $"(?(42)(?!))");
 
-        var inputs = parts[1].Split("\n").ToArray();
+        var inputs = parts[1].SplitLines().ToArray();
 
         var pattern = $"^{rules[0].GeneratePattern(rules)}$";
 

@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 using AdventOfCode.Utils;
 using AdventOfCode.Utils.Bits;
 using MoreLinq.Extensions;
-using Spectre.Console;
 
 namespace AdventOfCode._2020;
 
@@ -53,8 +51,8 @@ public class Day14 : Solution
     public override Answer Part1(string input)
     {
         var operations = input
-            .Split("\n")
-            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .SplitLines()
+            .RemoveEmptyStrings()
             .Select(BitOperations.From);
 
         var memory = new Dictionary<ulong, ulong>();
@@ -97,8 +95,8 @@ public class Day14 : Solution
     public override Answer Part2(string input)
     {
         var operations = input
-            .Split("\n")
-            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .SplitLines()
+            .RemoveEmptyStrings()
             .Select(BitOperations.From);
 
         var memory = new Dictionary<ulong, ulong>();

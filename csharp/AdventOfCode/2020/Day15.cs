@@ -1,6 +1,3 @@
-using MoreLinq;
-using Spectre.Console;
-
 namespace AdventOfCode._2020;
 
 [EventIdentifier(2020, 15)]

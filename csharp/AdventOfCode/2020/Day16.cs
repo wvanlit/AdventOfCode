@@ -1,8 +1,5 @@
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
-using MoreLinq;
-using MoreLinq.Experimental;
-using Spectre.Console;
 
 namespace AdventOfCode._2020;
 
@@ -18,7 +15,7 @@ public class Day16 : Solution
 
     private static (Field[] fields, uint[] ticket, uint[][] tickets) Parse(string input)
     {
-        var blocks = input.Split("\n\n");
+        var blocks = input.SplitGroups();
 
         var fields = blocks[0]
             .Split("\n")
@@ -77,10 +74,10 @@ public class Day16 : Solution
             selectedFields[leftOverField.Name] = idx;
         }
 
-        foreach (var kv in selectedFields)
-        {
-            AnsiConsole.WriteLine($"{kv.Key,20} = {kv.Value:D2} = {myTicket[kv.Value]:D4}");
-        }
+        // foreach (var kv in selectedFields)
+        // {
+        //     AnsiConsole.WriteLine($"{kv.Key,20} = {kv.Value:D2} = {myTicket[kv.Value]:D4}");
+        // }
 
         return selectedFields
             .Where(kv => kv.Key.Contains("departure"))

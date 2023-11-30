@@ -1,5 +1,5 @@
+using AdventOfCode.Extensions;
 using MoreLinq;
-using Spectre.Console;
 
 namespace AdventOfCode._2020;
 
@@ -138,7 +138,7 @@ public class Day18 : Solution
 
     public override Answer Part1(string input)
     {
-        var lines = input.Split("\n");
+        var lines = input.SplitLines();
 
         var evals = new List<long>();
         foreach (var (i, line) in lines.Index())
@@ -185,7 +185,7 @@ public class Day18 : Solution
     
     public override Answer Part2(string input)
     {
-        var lines = input.Split("\n");
+        var lines = input.SplitLines();
 
         var evals = new List<long>();
         foreach (var (i, line) in lines.Index())
