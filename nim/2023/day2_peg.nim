@@ -4,28 +4,26 @@ import npeg, math
 type Round = tuple[r: int, g: int, b: int]
 type Game = tuple[id: int, rounds: seq[Round]]
 
+func parseRound(cubes: Table[string, int]): Round =
+    return (
+        r: cubes.getOrDefault("red", 0),
+        g: cubes.getOrDefault("green", 0),
+        b: cubes.getOrDefault("blue", 0)
+    )
+
 proc parse(input: string): seq[Game] =
     var games: seq[Game] = @[]
-    var current_game: Game = (id: 0, rounds: @[])
+    var rounds: seq[Round] = @[]
     var cubes: Table[string, int] = initTable[string, int]()
-    var round_count = 0
 
     let parser = peg "games":
         games <- +(game * "\n")
-        game <- id * ": " * +round:
-            games.add(current_game)
-            current_game = (id: 0, rounds: @[])
-            round_count = 0
-        id <- "Game " * >+Digit:
-            current_game.id = parseInt($1)
+        game <- "Game " * >+Digit * ": " * +round:
+            games.add((id: parseInt($1), rounds: rounds))
+            rounds = @[]
         round <- +(cube * ?", ") * ?"; ":
-            round_count += 1
-            current_game.rounds.add((
-                r: cubes.getOrDefault("red", 0),
-                g: cubes.getOrDefault("green", 0),
-                b: cubes.getOrDefault("blue", 0)
-            ))
-            cubes = initTable[string, int]()
+            rounds.add(parseRound(cubes))
+            cubes.clear()
         cube <- (>+Digit * " " * >("red" | "green" | "blue")):
             cubes[$2] = parseInt($1)
 
@@ -41,7 +39,7 @@ func part1(games: seq[Game]): int =
 
 func part2(games: seq[Game]): int =
     result = games
-        .mapIt(it.rounds.foldl((
+            .mapIt(it.rounds.foldl((
             r: max(a.r, b.r),
             g: max(a.g, b.g),
             b: max(a.b, b.b))))
