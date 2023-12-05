@@ -1,5 +1,5 @@
 include "../prelude"
-import strformat, unittest, algorithm, "../utils/seq_utils"
+import algorithm, "../utils/seq_utils"
 
 type AlmanacRange = tuple[destination: int, source: int, rangeLength: int]
 
@@ -46,7 +46,7 @@ func getMappedValue(value: int, lookupTable: Table[string, AlmanacMap]): int =
         map = lookupTable[map.toType]
     result = result.getMappedValue(map)
 
-func getSliced(seed: SeedRange, almanac: AlmanacRange): tuple[left: SeedRange, middle: SeedRange, right: SeedRange] =
+func getSliced*(seed: SeedRange, almanac: AlmanacRange): tuple[left: SeedRange, middle: SeedRange, right: SeedRange] =
     let r = almanac.source..(almanac.source + almanac.rangeLength)
     let s = seed.start..(seed.start + seed.length)
     let invalidRange = (start: -1, length: -1)
@@ -129,51 +129,5 @@ proc main() =
 
     echo "Part 2: ", seedPairs.mapIt(lookupTable.getMappedRange(it)).flatten().sortedByIt(it.start)[0].start
 
-suite "Day 5":
-    let invalidRange = (start: -1, length: -1)
-    let almanac = (destination: 0, source: 2, rangeLength: 2) # 2..4
-
-    test ".a[xxx]b.":
-        let seed = (start: 1, length: 4) # 1..5
-        check getSliced(seed, almanac) == 
-            (left:   (start: 1, length: 1), 
-            middle: (start: 2, length: 2), 
-            right:  (start: 4, length: 1))
-    test "..[axb]..":
-        let seed = (start: 2, length: 2) # 2..4
-        check getSliced(seed, almanac) == 
-            (left:   invalidRange, 
-            middle: (start: 2, length: 2), 
-            right:  invalidRange)
-    test "..[abx]..":
-        let seed = (start: 2, length: 1) # 2..3
-        check getSliced(seed, almanac) == 
-            (left:   invalidRange, 
-            middle: (start: 2, length: 1), 
-            right:  invalidRange)
-    test ".a[xxb]..":
-        let seed = (start: 1, length: 3) # 1..4
-        check getSliced(seed, almanac) == 
-            (left:   (start: 1, length: 1), 
-            middle: (start: 2, length: 2), 
-            right:  invalidRange)
-    test "..[axx]b.":
-        let seed = (start: 2, length: 3) # 2..5
-        check getSliced(seed, almanac) == 
-            (left:   invalidRange, 
-            middle: (start: 2, length: 2), 
-            right:  (start: 4, length: 1))
-    test "ab[...]..":
-        let seed = (start: 0, length: 2) # 0..1
-        check getSliced(seed, almanac) == 
-            (left:   (start: 0, length: 2), 
-            middle: invalidRange, 
-            right:  invalidRange)
-    test "..[...]ab":
-        let seed = (start: 4, length: 2) # 4..5
-        check getSliced(seed, almanac) == 
-            (left:   invalidRange, 
-            middle: invalidRange, 
-            right:  (start: 4, length: 2))
-
-main()
+if isMainModule:
+    main()      
