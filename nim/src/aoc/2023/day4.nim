@@ -10,6 +10,7 @@ func parse(line: string): Card =
     let id = ticket[0].replace("Card", "").strip.parseInt
     let winning = parts[0].strip.split(" ").filterIt(not it.isEmptyOrWhitespace).mapIt(it.parseInt)
     let numbers = parts[1].strip.split(" ").filterIt(not it.isEmptyOrWhitespace).mapIt(it.parseInt)
+
     (id, winning, numbers)
 
 func hasMatchingNumbers(card: Card): int = 
