@@ -1,5 +1,12 @@
+# Ignore all without extension - This will ignore created binaries
+*
+!*.* 
+!*/
+
+# Actual .gitignore
 .idea/
 
 nimcache/
 nimblecache/
 htmldocs/
+
