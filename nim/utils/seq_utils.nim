@@ -20,4 +20,10 @@ proc permute[T](s: var seq[T], start: int): seq[seq[T]] =
 proc permutations*[T](s: var seq[T]): seq[seq[T]] =
     result = permute(s, 0)
 
+proc flatten*[T](seqs: seq[seq[T]]): seq[T] =
+  result = @[]
+  for subseq in seqs:
+    for item in subseq:
+      result.add(item)
+
  
