@@ -7,10 +7,13 @@
 
 import unittest
 import "aoc/2023/day5"
+import "aoc/utils/io_utils"
 
 suite "2023 - day 5":
     let invalidRange = (start: -1, length: -1)
     let almanac = (destination: 0, source: 2, rangeLength: 2) # 2..4
+    let example = readInput(2023, 5, test = true)
+    let input = readInput(2023, 5, test = false)
 
     test ".a[xxx]b.":
         let seed = (start: 1, length: 4) # 1..5
@@ -55,3 +58,16 @@ suite "2023 - day 5":
             middle: invalidRange, 
             right:  (start: 4, length: 2))
 
+    test "Part 1 - Example Input":
+        check part1(example) == 35
+
+    test "Part 1 - Actual Input":
+        check part1(input) == 240320250
+
+    test "Part 2 - Example Input":
+        check part2(example) == 46
+
+    test "Part 2 - Actual Input":
+        check part2(input) == 28580589
+
+    

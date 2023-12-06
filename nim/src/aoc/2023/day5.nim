@@ -3,11 +3,7 @@ import algorithm, "../utils/seq_utils"
 
 type AlmanacRange = tuple[destination: int, source: int, rangeLength: int]
 
-type AlmanacMap = tuple [
-    fromType: string, 
-    toType: string, 
-    maps: seq[AlmanacRange]
-    ]
+type AlmanacMap = tuple [fromType: string, toType: string, maps: seq[AlmanacRange]]
 
 type SeedRange = tuple[start: int, length: int]
 
@@ -20,7 +16,7 @@ func parseMap(map: string): AlmanacMap =
     for line in grid:
         let parts = line.strip.split(" ").mapIt(it.parseInt)
         maps.add((destination: parts[0], source: parts[1], rangeLength: parts[2]))
-    
+
     (fromType: types[0], toType: types[1], maps: maps)
 
 func parsePairs(seeds: seq[int]): seq[SeedRange] =
@@ -57,20 +53,20 @@ func getSliced*(seed: SeedRange, almanac: AlmanacRange): tuple[left: SeedRange, 
     # .a[xxx]b.
     elif s.a < r.a and s.b > r.b:
         result = (
-            left: (start: s.a, length: r.a - s.a), 
-            middle: (start: r.a, length: r.b - r.a), 
+            left: (start: s.a, length: r.a - s.a),
+            middle: (start: r.a, length: r.b - r.a),
             right: (start: r.b, length: s.b - r.b))
     # .a[xxb].
     elif s.a < r.a and s.b in r:
         result = (
-            left: (start: s.a, length: r.a - s.a), 
-            middle: (start: r.a, length: s.b - r.a), 
+            left: (start: s.a, length: r.a - s.a),
+            middle: (start: r.a, length: s.b - r.a),
             right: invalidRange)
     # .[axx]b.
     elif s.a in r and s.b > r.b:
         result = (
-            left: invalidRange, 
-            middle: (start: s.a, length: r.b - s.a), 
+            left: invalidRange,
+            middle: (start: s.a, length: r.b - s.a),
             right: (start: r.b, length: s.b - r.b))
     # .ab[...].
     elif s.b > r.a:
@@ -87,7 +83,7 @@ func getSliced*(seed: SeedRange, almanac: AlmanacRange): tuple[left: SeedRange, 
         result.middle = invalidRange
     if result.right.length == 0:
         result.right = invalidRange
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+
 proc getMappedRange(map: AlmanacMap, value: SeedRange): seq[SeedRange] =
     ## Any source numbers that aren't mapped correspond to the same destination number
     result = @[]
@@ -99,8 +95,8 @@ proc getMappedRange(map: AlmanacMap, value: SeedRange): seq[SeedRange] =
 
         if(sliced.left.start != -1):
             result = result.concat(getMappedRange(map, sliced.left))
-        
-        result.add((start:  r.destination + sliced.middle.start - r.source, length: sliced.middle.length))
+
+        result.add((start: r.destination + sliced.middle.start - r.source, length: sliced.middle.length))
 
         if(sliced.right.start != -1):
             result = result.concat(getMappedRange(map, sliced.right))
@@ -116,18 +112,29 @@ proc getMappedRange(lookupTable: Table[string, AlmanacMap], value: SeedRange): s
         map = lookupTable[map.toType]
     result = result.mapIt(map.getMappedRange(it)).flatten()
 
-proc main() =
-    let input = readInput(2023, 5, test = false).strip.split("\n\n")
-
-    let seeds = input[0].replace("seeds: ", "").split(" ").mapIt(it.parseInt)
-    let maps = input[1..^1].map(parseMap)
+proc parse(input: string): tuple[seeds: seq[int], lookupTable: Table[string, AlmanacMap]] =
+    let splitInput = input.strip.split("\n\n")
+    let seeds = splitInput[0].replace("seeds: ", "").split(" ").mapIt(it.parseInt)
+    let maps = splitInput[1..^1].map(parseMap)
     let lookupTable = createLookupTable(maps)
 
-    echo "Part 1: ", seeds.mapIt(it.getMappedValue(lookupTable)).min
+    (seeds, lookupTable)
 
+proc part1*(input: string): int =
+    let (seeds, lookupTable) = parse(input)
+    seeds.mapIt(it.getMappedValue(lookupTable)).min
+
+proc part2*(input: string): int =
+    let (seeds, lookupTable) = parse(input)
     let seedPairs = parsePairs(seeds)
 
-    echo "Part 2: ", seedPairs.mapIt(lookupTable.getMappedRange(it)).flatten().sortedByIt(it.start)[0].start
+    seedPairs.mapIt(lookupTable.getMappedRange(it)).flatten().sortedByIt(it.start)[0].start
+
+proc main() =
+    let input = readInput(2023, 5, test = false)
+
+    echo "Part 1: ", part1(input)
+    echo "Part 2: ", part2(input)
 
 if isMainModule:
-    main()      
+    main()
