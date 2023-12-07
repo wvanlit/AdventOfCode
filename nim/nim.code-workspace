@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../inputs"
+		}
+	],
+	"settings": {
+		"nim.nimprettyIndent": 4,
+		"nim.nimprettyMaxLineLen": 120,
+		"nim.nimsuggestRestartTimeout": 5
+	}
+}
