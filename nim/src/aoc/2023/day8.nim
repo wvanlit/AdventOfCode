@@ -32,19 +32,19 @@ proc part1(path: Path, nodes: Nodes): int =
     return steps
 
 proc part2(path: Path, nodes: Nodes): int =
-    var currentNode = nodes["AAA"]
+    var currentNodes = nodes.values.toSeq.filterIt(it.id[^1] == 'A')
     var steps = 0
 
-    while currentNode.id != "ZZZ":
+    while not currentNodes.allIt(it.id.contains("Z")):
         let dir = path[steps mod path.len] # Prevents index out of bounds
-        currentNode = if dir == 'L': nodes[currentNode.left] else: nodes[currentNode.right]
+        currentNodes = currentNodes.mapIt(if dir == 'L': nodes[it.left] else: nodes[it.right])
         inc(steps)
 
     return steps
 
 
 proc main() =
-    let input = readInput(2023, 8, test = true).strip
+    let input = readInput(2023, 8, test = false).strip
     let map = parse(input)
 
     echo "Part 1: ", part1(map.path, map.nodes)
