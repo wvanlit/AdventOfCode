@@ -1,27 +1,20 @@
 import "../utils/io_utils", "../utils/seq_utils"
 import algorithm, sequtils, strutils, tables, math, sugar
 
-proc extrapolateNextNumber(sequence: seq[int]): int =
-    var lists = @[sequence]
+func generateSequenceList(sequence: seq[int]): seq[seq[int]] =
+    result = @[sequence]
+    while not result[^1].allIt(it == 0):
+        result.add(result[^1].window(2).mapIt(it[1] - it[0]).toSeq)
 
-    while not lists[^1].allIt(it == 0):
-        lists.add(lists[^1].window(2).mapIt(it[1] - it[0]).toSeq)
+func extrapolateNextNumber(sequence: seq[int]): int =
+    generateSequenceList(sequence).reversed.mapIt(it[^1]).foldl(a + b)
 
-    for last in lists.reversed().mapIt(it[^1]):
-        result = last + result
-
-proc extrapolatePreviousNumber(sequence: seq[int]): int =
-    var lists = @[sequence]
-
-    while not lists[^1].allIt(it == 0):
-        lists.add(lists[^1].window(2).mapIt(it[1] - it[0]).toSeq)
-
-    for first in lists.reversed().mapIt(it[0]):
-        result = first - result
+func extrapolatePreviousNumber(sequence: seq[int]): int =
+    generateSequenceList(sequence).reversed.mapIt(it[0]).foldl(b - a)
 
 proc main() =
-    let input = readInput(2023, 9, test = false).strip
-    let sequences = input.splitLines.mapIt(it.splitWhitespace.mapIt(it.parseInt).toSeq).toSeq
+    let input = readInput(2023, 9, test = false).strip.splitLines
+    let sequences = input.mapIt(it.splitWhitespace.mapIt(it.parseInt).toSeq).toSeq
 
     echo "Part 1: ", sequences.map(extrapolateNextNumber).sum
     echo "Part 2: ", sequences.map(extrapolatePreviousNumber).sum
