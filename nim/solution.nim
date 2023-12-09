@@ -1,5 +1,11 @@
 import os, times, osproc
 
+## 
+## Runs and times a solution for a given year and day
+## Also runs tests if they exist
+## Fairly hacky, but it works
+## 
+
 proc runCommand(command: string): Duration =
     let start = now()
     discard execCmd(command)

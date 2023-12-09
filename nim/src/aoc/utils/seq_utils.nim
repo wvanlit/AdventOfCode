@@ -26,4 +26,7 @@ proc flatten*[T](seqs: seq[seq[T]]): seq[T] =
     for item in subseq:
       result.add(item)
 
- 
+proc window*[T](s: seq[T], size: int): seq[seq[T]] =
+  result = @[]
+  for i in 0 ..< len(s) - size + 1:
+    result.add(s[i ..< i + size])
