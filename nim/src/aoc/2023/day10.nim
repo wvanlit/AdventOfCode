@@ -112,6 +112,8 @@ let roundedCorners = {
     (Pipe.NE, Pipe.NW): 2, # └┘ - 2 hits
     (Pipe.SE, Pipe.NW): 1, # ┌┘ - 1 hit
     (Pipe.NE, Pipe.SW): 1, # └┐ - 1 hit
+    # TODO: handle start node correctly
+    # ███████████████████┌┘└┐┌┘└┘│└┐│┌┐│││┌┘┌┘┌┘█└┐│└┐┌┘└┐┌┘┌┐┌┐┌┘│┌┐│││││└┐└┐└┘└┐┌┘└┘└┼└─┐┌┘ ┌┘└┘└┐└┘│┌─┘ ┌┐│┌┘└┐┌───┐┌┘    
 }.toTable
 
 proc inPolygon(grid: Grid[Pipe], pipe: seq[Cell[Pipe]], cell: Cell[Pipe]): bool =
@@ -133,6 +135,7 @@ proc inPolygon(grid: Grid[Pipe], pipe: seq[Cell[Pipe]], cell: Cell[Pipe]): bool 
             hits += 1
         elif roundedCorners.hasKey((prev, c)):
             hits += roundedCorners[(prev, c)]
+
         prev = c
 
     return not hits mod 2 == 0
@@ -165,13 +168,10 @@ proc findEnclosedArea(grid:var Grid[Pipe]): int =
     return cellsInPipeArea.len
 
 proc main() =
-    let input = readInput(2023, 10, test = true).strip.splitLines
+    let input = readInput(2023, 10, test = false).strip.splitLines
     var grid = parseGrid(input)
 
     echo "Part 1: ", findFarthestFromStart(grid)
     echo "Part 2: ", findEnclosedArea(grid)
 
 main()
-
-# ███████████████████
-# 12
