@@ -22,6 +22,11 @@ proc getValue[T](grid: Grid[T], x: int, y: int): T =
         return grid.data[y][x]
     assert false, "Index (" & $x & "," & $y & ") out of bounds"
 
+proc getCell[T](grid: Grid[T], x: int, y: int): Cell[T] =
+    if x >= 0 and x < grid.width and y >= 0 and y < grid.height:
+        return (x, y, grid.data[y][x])
+    assert false, "Index (" & $x & "," & $y & ") out of bounds"
+
 proc printGrid[T](grid: Grid[T]) =
     for y in 0..<grid.height:
         for x in 0..<grid.width:

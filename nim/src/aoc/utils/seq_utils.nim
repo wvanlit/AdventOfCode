@@ -30,3 +30,9 @@ proc window*[T](s: seq[T], size: int): seq[seq[T]] =
   result = @[]
   for i in 0 ..< len(s) - size + 1:
     result.add(s[i ..< i + size])
+
+proc pairs*[T](s: seq[T]): seq[(T, T)] =
+  result = @[]
+  for i in 0 ..< len(s):
+    for j in i + 1 ..< len(s):
+      result.add((s[i], s[j]))
