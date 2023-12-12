@@ -96,29 +96,12 @@ func findValidArrangements(groups: seq[seq[Spring]], damaged: seq[int]): int =
             flat[idx] = Unknown
 
     result = backtrack(0)
-    debugEcho "Found ", result, " valid arrangements"
 
 func solveUnknownSprings(record: Record): int =
-    result = 0
-    let groups = record.springs.groupSprings
-    let damaged = record.groupOfDamagedSprings
-
-    result = findValidArrangements(groups, damaged)
-
-proc part2(records: seq[Record]): int =
-    var s = newSeq[int](records.len)
-    
-    for r in records:
-        debugEcho "Found ", r.springs.countIt(it == Unknown), " unknown springs"
-
-    parallel:
-        for i in 0..records.len-1:
-            s[i] = spawn solveUnknownSprings(records[i])
-
-    s.sum
+    findValidArrangements(record.springs.groupSprings, record.groupOfDamagedSprings)
 
 if isMainModule:
-    let input = readInput(2023, 12, test=false).strip.splitLines.map(parseRecord)
+    let input = readInput(2023, 12, test=true).strip.splitLines.map(parseRecord)
 
-    echo "Part1: ", input.mapIt(solveUnknownSprings(it)).sum
-    echo "Part2: ", part2(input.map(unfold))
+    echo "Part1: ", input.map(solveUnknownSprings).sum
+    echo "Part2: ", input.map(unfold).map(solveUnknownSprings).sum
