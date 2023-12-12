@@ -112,8 +112,8 @@ let roundedCorners = {
     (Pipe.NE, Pipe.NW): 2, # └┘ - 2 hits
     (Pipe.SE, Pipe.NW): 1, # ┌┘ - 1 hit
     (Pipe.NE, Pipe.SW): 1, # └┐ - 1 hit
-    # TODO: handle start node correctly
-    # ███████████████████┌┘└┐┌┘└┘│└┐│┌┐│││┌┘┌┘┌┘█└┐│└┐┌┘└┐┌┘┌┐┌┐┌┘│┌┐│││││└┐└┐└┘└┐┌┘└┘└┼└─┐┌┘ ┌┘└┘└┐└┘│┌─┘ ┌┐│┌┘└┐┌───┐┌┘    
+    # TODO: handle start node correctly for other inputs
+    (Pipe.NE, Pipe.ST): 1, # └┼ - 1 hit
 }.toTable
 
 proc inPolygon(grid: Grid[Pipe], pipe: seq[Cell[Pipe]], cell: Cell[Pipe]): bool =
@@ -140,18 +140,7 @@ proc inPolygon(grid: Grid[Pipe], pipe: seq[Cell[Pipe]], cell: Cell[Pipe]): bool 
 
     return not hits mod 2 == 0
 
-proc findEnclosedArea(grid:var Grid[Pipe]): int =
-    let pipeCells = grid.floodFill()
-
-    # Remove all pipes not in the main pipe
-    for y in 0..<grid.height:
-        for x in 0..<grid.width:
-            let cell = grid.getValue(x, y)
-            if cell != Pipe.NO and not pipeCells.anyIt(it.x == x and it.y == y):
-                grid.setValue(x, y, Pipe.NO)
-
-    let cellsInPipeArea = grid.iterate().toSeq.filterIt(it.value == Pipe.NO).filterIt(inPolygon(grid, pipeCells, it))
-
+proc printPipes(grid: Grid[Pipe], pipeCells: seq[Cell[Pipe]], cellsInPipeArea: seq[Cell[Pipe]]) =
     # The pipe is similar to a polygon
     for y in 0..<grid.height:
         for x in 0..<grid.width:
@@ -164,6 +153,20 @@ proc findEnclosedArea(grid:var Grid[Pipe]): int =
 
         stdout.write("\n")
     stdout.flushFile()    
+
+proc findEnclosedArea(grid:var Grid[Pipe]): int =
+    let pipeCells = grid.floodFill()
+
+    # Remove all pipes not in the main pipe
+    for y in 0..<grid.height:
+        for x in 0..<grid.width:
+            let cell = grid.getValue(x, y)
+            if cell != Pipe.NO and not pipeCells.anyIt(it.x == x and it.y == y):
+                grid.setValue(x, y, Pipe.NO)
+
+    let cellsInPipeArea = grid.iterate().toSeq.filterIt(it.value == Pipe.NO).filterIt(inPolygon(grid, pipeCells, it))
+
+    printPipes(grid, pipeCells, cellsInPipeArea)
 
     return cellsInPipeArea.len
 
