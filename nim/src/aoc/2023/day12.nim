@@ -2,8 +2,8 @@ import "../utils/io_utils", "../utils/seq_utils"
 import algorithm, sequtils, strutils, tables, math, sugar, threadpool
 {.experimental: "parallel".}
 
-type Spring = enum Operational, Damaged, Unknown
-type Record = tuple[springs: seq[Spring], groupOfDamagedSprings: seq[int]]
+type Spring* = enum Operational, Damaged, Unknown
+type Record* = tuple[springs: seq[Spring], groupOfDamagedSprings: seq[int]]
 
 func parseSpring(s: char): Spring =
     case s:
@@ -12,14 +12,14 @@ func parseSpring(s: char): Spring =
         of '.': Operational
         else: raise newException(ValueError, "Invalid spring")
 
-func parseRecord(line: string): Record =
+func parseRecord*(line: string): Record =
     let parts = line.split(" ");
     let springs = parts[0].toSeq.map(parseSpring)
     let groups = parts[1].split(",").mapIt(it.parseInt)
 
     return (springs, groups)
 
-func unfold(record: Record): Record =
+func unfold*(record: Record): Record =
     let springs = record.springs
     let damaged = record.groupOfDamagedSprings
 
@@ -76,8 +76,9 @@ func couldBeValid(springs: seq[Spring], damaged: seq[int]): bool =
 
     return true
 
-func findValidArrangements(groups: seq[seq[Spring]], damaged: seq[int]): int =
-    var flat = groups.flatten
+func findValidArrangements*(record: Record): int =
+    var flat = record.springs
+    let damaged = record.groupOfDamagedSprings
 
     func backtrack(idx: int): int =
         if idx == flat.len:
@@ -97,11 +98,8 @@ func findValidArrangements(groups: seq[seq[Spring]], damaged: seq[int]): int =
 
     result = backtrack(0)
 
-func solveUnknownSprings(record: Record): int =
-    findValidArrangements(record.springs.groupSprings, record.groupOfDamagedSprings)
-
 if isMainModule:
     let input = readInput(2023, 12, test=true).strip.splitLines.map(parseRecord)
 
-    echo "Part1: ", input.map(solveUnknownSprings).sum
-    echo "Part2: ", input.map(unfold).map(solveUnknownSprings).sum
+    echo "Part1: ", input.map(findValidArrangements).sum
+    # echo "Part2: ", input.map(unfold).map(findValidArrangements).sum
