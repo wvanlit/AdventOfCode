@@ -1,9 +1,8 @@
-import "../utils/io_utils", "../utils/seq_utils"
-import algorithm, sequtils, strutils, tables, math, sugar, threadpool
-{.experimental: "parallel".}
+import "../utils/io_utils"
+import sequtils, strutils, tables, math
 
 type Spring* = enum Operational, Damaged, Unknown
-type Record* = tuple[springs: seq[Spring], groupOfDamagedSprings: seq[int]]
+type Record* = tuple[springs: seq[Spring], blocks: seq[int]]
 
 func parseSpring(s: char): Spring =
     case s:
@@ -20,86 +19,65 @@ func parseRecord*(line: string): Record =
     return (springs, groups)
 
 func unfold*(record: Record): Record =
-    let springs = record.springs
-    let damaged = record.groupOfDamagedSprings
-
-    var unfoldedSprings = springs
-    var unfoldedDamaged = damaged
+    var unfoldedSprings = record.springs
+    var unfoldedBlocks = record.blocks
 
     for _ in 0..3:
         unfoldedSprings.add(Unknown)
-        for s in springs:
+        for s in record.springs:
             unfoldedSprings.add(s)
 
-        for i in damaged:
-            unfoldedDamaged.add(i)
+        for i in record.blocks:
+            unfoldedBlocks.add(i)
     
-    (unfoldedSprings, unfoldedDamaged)
+    (unfoldedSprings, unfoldedBlocks)
 
-func groupSprings(springs: seq[Spring]): seq[seq[Spring]] =
-    result = @[]
-    var currentGroup: seq[Spring] = @[]
-    var currentType: Spring = Unknown
-    
-    for s in springs:
-        if s == currentType:
-            currentGroup.add(s)
+type SearchCache = TableRef[tuple[pi: int, bi: int, currentBlockLength: int], int]
+
+func backtrack(
+    pattern: seq[Spring], 
+    blocks: seq[int], 
+    pi: int,  # current position in the pattern
+    bi: int, # current position in the blocks sequence
+    currentBlockLength: int, # length of the current block of damaged springs
+    memo: SearchCache): int =
+    let state = (pi, bi, currentBlockLength)
+    if state in memo:
+        return memo[state]
+
+    # Done!
+    if pi == pattern.len:
+        # Used all the blocks springs
+        if bi == blocks.len and currentBlockLength == 0:
+            return 1
+        # Used all the blocks springs, but didn't end on a block boundary
+        elif bi == blocks.len - 1 and currentBlockLength == blocks[bi]:
+            return 1
         else:
-            if currentGroup.len > 0:
-                result.add(currentGroup)
-                currentGroup = @[]
-            currentType = s
-            currentGroup.add(s)
-    if currentGroup.len > 0:
-        result.add(currentGroup)
+            return 0
 
-func isValidRecord(record: Record): bool =
-    assert not record.springs.anyIt(it == Unknown), "Unknown spring in record"
+    # Operational Springs are only valid at the start or end of a block
+    if pattern[pi] == Operational or pattern[pi] == Unknown:
+        # start a new block
+        if currentBlockLength == 0: 
+            result += backtrack(pattern, blocks, pi+1, bi, 0, memo)
+        # end the current block
+        elif currentBlockLength > 0 and 
+             bi < blocks.len     and 
+             currentBlockLength == blocks[bi]: 
+            result += backtrack(pattern, blocks, pi+1, bi+1, 0, memo)
+        # All other states containing an Operational Spring are invalid
+    # Otherwise, we must continue the current block
+    if pattern[pi] == Damaged or pattern[pi] == Unknown: 
+        result += backtrack(pattern, blocks, pi+1, bi, currentBlockLength+1, memo)
 
-    let damaged = record.springs.groupSprings.filterIt(it[0] == Damaged).mapIt(it.len)
-
-    if damaged.len != record.groupOfDamagedSprings.len:
-        return false
-
-    return damaged.zip(record.groupOfDamagedSprings).allIt(it[0] == it[1])
-
-func couldBeValid(springs: seq[Spring], damaged: seq[int]): bool =
-    let firstUnknown = springs.find(Unknown)
-    let springs = springs[0..firstUnknown].groupSprings.filterIt(it[0] == Damaged).mapIt(it.len)
-
-    if springs.len > damaged.len:
-        return false
-        
-    for i in 0..springs.len-1:
-        if springs[i] > damaged[i]:
-            return false
-
-    return true
+    memo[state] = result
 
 func findValidArrangements*(record: Record): int =
-    var flat = record.springs
-    let damaged = record.groupOfDamagedSprings
-
-    func backtrack(idx: int): int =
-        if idx == flat.len:
-            if isValidRecord((flat, damaged)):
-                return 1
-        elif not couldBeValid(flat, damaged):
-            return 0
-        else:
-            if flat[idx] != Unknown:
-                return backtrack(idx+1)
-
-            for s in [Operational, Damaged]:
-                flat[idx] = s
-                result += backtrack(idx+1)
-
-            flat[idx] = Unknown
-
-    result = backtrack(0)
+    return backtrack(record.springs, record.blocks, 0, 0, 0, SearchCache())
 
 if isMainModule:
-    let input = readInput(2023, 12, test=true).strip.splitLines.map(parseRecord)
+    let input = readInput(2023, 12, test=false).strip.splitLines.map(parseRecord)
 
     echo "Part1: ", input.map(findValidArrangements).sum
-    # echo "Part2: ", input.map(unfold).map(findValidArrangements).sum
+    echo "Part2: ", input.map(unfold).map(findValidArrangements).sum
