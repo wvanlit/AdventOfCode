@@ -13,10 +13,8 @@ func checkVerticalSymmetry(grid: Grid[char]): bool =
     let pairs = (0..grid.width).toSeq.window(2).mapIt((it[0], it[1]))
     let check = ((1..4).toSeq, (5..9).toSeq.reversed)
 
-    for i in check[0].zip(check[1]):
-        let (a, b) = i
-        if grid.getValue(a) != grid.getValue(b):
-            return false
+    for i, (x1, x2) in check[0].zip(check[1]):
+        # TODO: check if this is correct
 
 
 
