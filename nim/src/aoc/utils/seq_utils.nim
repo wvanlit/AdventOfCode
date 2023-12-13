@@ -36,3 +36,11 @@ proc pairs*[T](s: seq[T]): seq[(T, T)] =
   for i in 0 ..< len(s):
     for j in i + 1 ..< len(s):
       result.add((s[i], s[j]))
+
+func chunk*[T](s: seq[T], size: int): seq[seq[T]] =
+  result = @[]
+  var s2 = s
+
+  while len(s2) > 0:
+    result.add(s2[0 ..< min(size, len(s2))])
+    s2 = s2[min(size, len(s2)) ..< len(s2)]
