@@ -11,18 +11,26 @@ proc initGrid[T](width: int, height: int): Grid[T] =
     result.height = height
     result.data = newSeqWith(height, newSeq[T](width))
 
+proc row[T](grid: Grid[T], y: int): seq[T] =
+    return grid.data[y]
+
+proc col[T](grid: Grid[T], x: int): seq[T] =
+    result = newSeq[T](grid.height)
+    for y in 0..<grid.height:
+        result[y] = grid.data[y][x]
+
 proc setValue[T](grid: var Grid[T], x: int, y: int, value: T) =
     if x >= 0 and x < grid.width and y >= 0 and y < grid.height:
         grid.data[y][x] = value
     else:
         assert false, "Index (" & $x & "," & $y & ") out of bounds"
 
-proc getValue[T](grid: Grid[T], x: int, y: int): T =
+func getValue[T](grid: Grid[T], x: int, y: int): T =
     if x >= 0 and x < grid.width and y >= 0 and y < grid.height:
         return grid.data[y][x]
     assert false, "Index (" & $x & "," & $y & ") out of bounds"
 
-proc getCell[T](grid: Grid[T], x: int, y: int): Cell[T] =
+func getCell[T](grid: Grid[T], x: int, y: int): Cell[T] =
     if x >= 0 and x < grid.width and y >= 0 and y < grid.height:
         return (x, y, grid.data[y][x])
     assert false, "Index (" & $x & "," & $y & ") out of bounds"
