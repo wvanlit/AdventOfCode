@@ -19,6 +19,9 @@
 		"scope": "nim",
 		"prefix": "main",
 		"body": [
+			"import \"../utils/io_utils\"",
+			"import strutils, sequtils, math, tables",
+			"",
 			"proc main() =",
 			"	let input = readInput($1, $2, test=true).strip",
 			"	",

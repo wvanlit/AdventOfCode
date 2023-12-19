@@ -10,6 +10,22 @@
 	"settings": {
 		"nim.nimprettyIndent": 4,
 		"nim.nimprettyMaxLineLen": 120,
-		"nim.nimsuggestRestartTimeout": 5
+		"nim.nimsuggestRestartTimeout": 1,
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "kill nimsuggest",
+				"type": "shell",
+				"command": "pgrep -f nimsuggest | xargs kill",
+				"args": [],
+				"problemMatcher": [],
+				"presentation": {
+					"reveal": "silent"
+				},
+				"group": "none"
+			}
+		]
 	}
 }

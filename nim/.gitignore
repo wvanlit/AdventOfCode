@@ -10,3 +10,4 @@ nimcache/
 nimblecache/
 htmldocs/
 
+.fuse_hidden*

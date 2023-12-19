@@ -1,4 +1,4 @@
-import sequtils
+import sequtils, sugar
 
 proc swap[T](a: var seq[T], i, j: int) =
     let temp = a[i]
@@ -44,3 +44,7 @@ func chunk*[T](s: seq[T], size: int): seq[seq[T]] =
   while len(s2) > 0:
     result.add(s2[0 ..< min(size, len(s2))])
     s2 = s2[min(size, len(s2)) ..< len(s2)]
+
+template each*[T](s: seq[T], action: untyped) =
+  for elem in s:
+    discard action(elem)
