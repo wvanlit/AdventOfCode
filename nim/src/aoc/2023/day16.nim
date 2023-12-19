@@ -42,12 +42,9 @@ func `$`(ray: Ray): string =
         dir = ">"
     return fmt"[{ray.origin} {dir}]"
 
-proc findEnergized(grid: SparseGrid[Tile]): int =
-    result = 0
-
+func calculateEnergizedNodes(grid: SparseGrid[Tile], start: Ray): int =
     var visited = CountTable[Ray]()
-
-    var stack: seq[Ray] = @[(LEFT, RIGHT)]
+    var stack: seq[Ray] = @[start]
 
     proc print() =
         let energizedNodes = visited.keys.toSeq.mapIt(it.origin).deduplicate
@@ -115,12 +112,29 @@ proc findEnergized(grid: SparseGrid[Tile]): int =
         else:
             raise newException(ValueError, "Invalid tile: " & $next.value)
             
-    echo "Visited: ", visited.keys.toSeq.filterIt(grid.inBounds(it.origin)).mapIt(it.origin).deduplicate.len
+    visited.keys.toSeq.filterIt(grid.inBounds(it.origin)).mapIt(it.origin).deduplicate.len
+
+proc findEnergized(grid: SparseGrid[Tile]): int =
+    calculateEnergizedNodes(grid, (LEFT, RIGHT))
+    
+
+proc findOptimalStartingPosition(grid: SparseGrid[Tile]): int =
+    result = int.low
+
+    # Test all borders
+    for x in grid.bounds.minX .. grid.bounds.maxX:
+        result = max(result, calculateEnergizedNodes(grid, ((x, grid.bounds.minY - 1), DOWN)))
+        result = max(result, calculateEnergizedNodes(grid, ((x, grid.bounds.maxY + 1), UP)))
+
+    for y in grid.bounds.minY .. grid.bounds.maxY:
+        result = max(result, calculateEnergizedNodes(grid, ((grid.bounds.minX - 1, y), RIGHT)))
+        result = max(result, calculateEnergizedNodes(grid, ((grid.bounds.maxX + 1, y), LEFT)))
 
 proc main() =
     let input = readInput(2023, 16, test=false).strip
     let grid = parse(input)
 
     echo "Part 1: ", findEnergized(grid)
+    echo "Part 2: ", findOptimalStartingPosition(grid)
 
 main()
