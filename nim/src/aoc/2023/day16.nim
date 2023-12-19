@@ -47,7 +47,7 @@ proc findEnergized(grid: SparseGrid[Tile]): int =
 
     var visited = CountTable[Ray]()
 
-    var stack: seq[Ray] = @[(ZERO, RIGHT)]
+    var stack: seq[Ray] = @[(LEFT, RIGHT)]
 
     proc print() =
         let energizedNodes = visited.keys.toSeq.mapIt(it.origin).deduplicate
@@ -116,10 +116,6 @@ proc findEnergized(grid: SparseGrid[Tile]): int =
             raise newException(ValueError, "Invalid tile: " & $next.value)
             
     echo "Visited: ", visited.keys.toSeq.filterIt(grid.inBounds(it.origin)).mapIt(it.origin).deduplicate.len
-
-    
-
-          
 
 proc main() =
     let input = readInput(2023, 16, test=false).strip
