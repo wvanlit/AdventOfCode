@@ -6,7 +6,8 @@ public static class StringExtensions
     public static uint ToUint(this string s) => uint.Parse(s);
     public static ulong ToUlong(this string s) => ulong.Parse(s);
 
-    public static string[] SplitLines(this string s) => s.Split(Environment.NewLine).ToArray();
+    public static string[] SplitLines(this string s) => 
+        s.ReplaceLineEndings().Split(Environment.NewLine).ToArray();
 
     public static string[] SplitGroups(this string s) =>
         s.Split(Environment.NewLine + Environment.NewLine).ToArray();

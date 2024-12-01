@@ -6,8 +6,9 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
 var year = int.Parse(config["Year"]!);
 var day = int.Parse(config["Day"]!);
+var fileExtension = bool.Parse(config["UseTestInput"]!) ? ".test" : "";
 
-var inputFile = Path.Combine(config["Inputs"]!, config["Year"]!, config["day"] + ".txt");
+var inputFile = Path.Combine(config["Inputs"]!, config["Year"]!, config["day"] + fileExtension + ".txt");
 var input = File.ReadAllText(inputFile).Trim();
 
 var printExceptions = bool.Parse(config["PrintException"]!);
