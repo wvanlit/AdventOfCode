@@ -13,6 +13,8 @@ public static class StringExtensions
         s.Split(Environment.NewLine + Environment.NewLine).ToArray();
 
     public static int[] ParseAsListOfInts(this string s) => s.SplitLines().Select(int.Parse).ToArray();
+    
+    public static int[] ParseAsListOfInts(this string s, string delim) => s.Trim().Split(delim).Select(int.Parse).ToArray();
 
     public static IEnumerable<string> RemoveEmptyStrings(this IEnumerable<string> strings) =>
         strings.Where(s => !string.IsNullOrWhiteSpace(s));
