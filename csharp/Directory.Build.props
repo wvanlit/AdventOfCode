@@ -1,0 +1,5 @@
+﻿<Project>
+    <PropertyGroup>
+        <NoWarn>CS1998</NoWarn>
+    </PropertyGroup>
+</Project>
