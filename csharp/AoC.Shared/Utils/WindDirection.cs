@@ -1,6 +1,6 @@
 namespace AoC.Shared.Utils;
 
-public enum Direction
+public enum WindDirection
 {
     North = 0,
     East = 1,

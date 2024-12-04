@@ -1,8 +1,9 @@
 ﻿using System.Text;
 using AoC.Shared.Extensions;
+using AoC.Shared.Utils;
 using Spectre.Console;
 
-namespace AoC.Shared.Utils.Spatial;
+namespace AoC.Shared.DataStructures;
 
 public class CharGrid2D
 {
@@ -46,17 +47,20 @@ public class CharGrid2D
         return result;
     }
 
-    public string GetVector(int x, int y, int dx, int dy, int len)
+    public string GetVector(int x, int y, Direction2D dir, int len)
     {
         var sb = new StringBuilder();
+        
         for (var i = 0; i < len; i++)
         {
-            var nx = x + dx * i;
-            var ny = y + dy * i;
+            var nx = x + dir.DeltaX * i;
+            var ny = y + dir.DeltaY * i;
+            
             if (nx < 0 || nx >= Width || ny < 0 || ny >= Height)
             {
                 return sb.ToString();
             }
+            
             sb.Append(Grid[ny][nx]);
         }
 

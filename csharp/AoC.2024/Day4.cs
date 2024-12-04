@@ -1,4 +1,6 @@
 using AoC.Shared;
+using AoC.Shared.DataStructures;
+using AoC.Shared.Utils;
 using AoC.Shared.Utils.Spatial;
 using Xunit.Abstractions;
 
@@ -12,24 +14,12 @@ public class Day4(ITestOutputHelper testOutputHelper) : SolutionBase(2024, 4, fa
 
         var xes = grid.FindAll('X');
 
-        var directions = new (int dx, int dy)[]
-        {
-            (1, 0), // right
-            (0, 1), // down
-            (1, 1), // down right
-            (1, -1), // up right
-            (-1, 0), // left
-            (0, -1), // up
-            (-1, -1), // up left
-            (-1, 1), // down left
-        };
-
         var sum = 0;
         foreach (var (x, y) in xes)
         {
-            foreach (var (dx, dy) in directions)
+            foreach (var dir in Direction2D.AllDirections)
             {
-                var word = grid.GetVector(x, y, dx, dy, 4);
+                var word = grid.GetVector(x, y, dir, 4);
 
                 if (word == "XMAS")
                 {
@@ -46,21 +36,13 @@ public class Day4(ITestOutputHelper testOutputHelper) : SolutionBase(2024, 4, fa
         var grid = new CharGrid2D(input.ToUpper());
         var ms = grid.FindAll('A');
 
-        var directions = new (int dx, int dy)[]
-        {
-            (1, 1), // down right
-            (1, -1), // up right
-            (-1, -1), // up left
-            (-1, 1), // down left
-        };
-
         var sum = 0;
         foreach (var (x, y) in ms)
         {
             var words = new List<string>();
-            foreach (var (dx, dy) in directions)
+            foreach (var dir in Direction2D.DiagonalDirections)
             {
-                var word = grid.GetVector(x - dx, y - dy, dx, dy, 3);
+                var word = grid.GetVector(x - dir.DeltaX, y - dir.DeltaY, dir, 3);
 
                 if (word == "MAS")
                 {

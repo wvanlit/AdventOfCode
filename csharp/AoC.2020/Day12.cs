@@ -18,15 +18,15 @@ public class Day12 (ITestOutputHelper outputHelper) : SolutionBase(2020, 12, fal
     private record ShipState(
         int NorthSouth = 0,
         int EastWest = 0,
-        Direction Direction = Direction.East
+        WindDirection WindDirection = WindDirection.East
     );
 
-    private static Direction Turn(Direction current, string dir, int degrees)
+    private static WindDirection Turn(WindDirection current, string dir, int degrees)
     {
         var steps = degrees / 90;
         var sign = dir == "L" ? -1 : 1;
         var index = (int)current;
-        var outcome = (Direction)((4 + index + steps * sign) % 4);
+        var outcome = (WindDirection)((4 + index + steps * sign) % 4);
 
         return outcome;
     }
@@ -42,14 +42,14 @@ public class Day12 (ITestOutputHelper outputHelper) : SolutionBase(2020, 12, fal
             "S" => current with { NorthSouth = current.NorthSouth - a.Value },
             "E" => current with { EastWest = current.EastWest + a.Value },
             "W" => current with { EastWest = current.EastWest - a.Value },
-            "L" => current with { Direction = Turn(current.Direction, "L", a.Value) },
-            "R" => current with { Direction = Turn(current.Direction, "R", a.Value) },
-            "F" => current.Direction switch
+            "L" => current with { WindDirection = Turn(current.WindDirection, "L", a.Value) },
+            "R" => current with { WindDirection = Turn(current.WindDirection, "R", a.Value) },
+            "F" => current.WindDirection switch
             {
-                Direction.North => current with { NorthSouth = current.NorthSouth + a.Value },
-                Direction.East => current with { NorthSouth = current.NorthSouth - a.Value },
-                Direction.South => current with { EastWest = current.EastWest + a.Value },
-                Direction.West => current with { EastWest = current.EastWest - a.Value },
+                WindDirection.North => current with { NorthSouth = current.NorthSouth + a.Value },
+                WindDirection.East => current with { NorthSouth = current.NorthSouth - a.Value },
+                WindDirection.South => current with { EastWest = current.EastWest + a.Value },
+                WindDirection.West => current with { EastWest = current.EastWest - a.Value },
                 _ => throw new ArgumentOutOfRangeException()
             },
             _ => throw new ArgumentOutOfRangeException()
