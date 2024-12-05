@@ -37,6 +37,7 @@ public abstract class SolutionBase
         
         Assert.NotNull(answer);
         Assert.NotEqual(Answer.Failed, answer);
+        Assert.NotEqual("-1", answer.ToString());
         
         OutputHelper.WriteLine($"Part 1: {answer}");
         
@@ -50,6 +51,7 @@ public abstract class SolutionBase
         
         Assert.NotNull(answer);
         Assert.NotEqual(Answer.Failed, answer);
+        Assert.NotEqual("-1", answer.ToString());
         
         OutputHelper.WriteLine($"Part 2: {answer}");
         
