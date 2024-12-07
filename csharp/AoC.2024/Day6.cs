@@ -15,51 +15,8 @@ public class Day6(ITestOutputHelper testOutputHelper) : SolutionBase(2024, 6, fa
     const char Obstruction = '#';
     const char Guard = '^';
     const char Empty = '.';
-    const char Path = 'X';
 
-
-    public override async Task<Answer> Part1(string input)
-    {
-        var grid = new CharGrid2D(input);
-        var path = new CharGrid2D(grid, Empty);
-
-        var obstructions = grid.FindAll(Obstruction);
-        var guardPos = grid.FindAll(Guard).Single();
-
-        path.Grid[guardPos.y][guardPos.x] = Path;
-
-        // Guard Rules:
-        // 1. If there is something directly in front of you, turn right 90 degrees
-        // 2. Otherwise, take a step forward.
-        // 3. Leaving the grid means end of patrol
-        var dir = Direction2D.Up;
-
-        while (grid.IsInBounds(
-                   guardPos.x + dir.DeltaX,
-                   guardPos.y + dir.DeltaY))
-        {
-            var nx = guardPos.x + dir.DeltaX;
-            var ny = guardPos.y + dir.DeltaY;
-
-            var isObstructed = obstructions.Any(o => o.x == nx && o.y == ny);
-
-            if (isObstructed)
-            {
-                dir = dir.Rotate90ClockwiseForGrid();
-            }
-            else
-            {
-                guardPos = (nx, ny);
-                path.Grid[ny][nx] = Path;
-            }
-        }
-
-        obstructions.ForEach(o => path.Grid[o.y][o.x] = Obstruction);
-
-        return path.FindAll(Path).Count;
-    }
-
-    public bool GridIsInfiniteLoop(CharGrid2D grid)
+    private (bool infinite, int distinctPath, List<(int x, int y)> path) TravelGrid(CharGrid2D grid)
     {
         var path = new HashSet<(Direction2D, int x, int y)>();
 
@@ -67,16 +24,13 @@ public class Day6(ITestOutputHelper testOutputHelper) : SolutionBase(2024, 6, fa
         var obstructions = grid.FindAll(Obstruction);
         var guardPos = grid.FindAll(Guard).Single();
 
-        path.Add((dir, guardPos.x, guardPos.y));
+        path.Add((dir, guardPos.x, guardPos.y)); // Add the starting position to the path
 
         // Guard Rules:
         // 1. If there is something directly in front of you, turn right 90 degrees
         // 2. Otherwise, take a step forward.
         // 3. Leaving the grid means end of patrol
-
-        while (grid.IsInBounds(
-                   guardPos.x + dir.DeltaX,
-                   guardPos.y + dir.DeltaY))
+        while (grid.IsInBounds(guardPos.x + dir.DeltaX, guardPos.y + dir.DeltaY))
         {
             var nx = guardPos.x + dir.DeltaX;
             var ny = guardPos.y + dir.DeltaY;
@@ -89,7 +43,7 @@ public class Day6(ITestOutputHelper testOutputHelper) : SolutionBase(2024, 6, fa
             }
             else if (path.Contains((dir, nx, ny)))
             {
-                return true;
+                return (true, -1, null!); // Infinite loop
             }
             else
             {
@@ -100,32 +54,35 @@ public class Day6(ITestOutputHelper testOutputHelper) : SolutionBase(2024, 6, fa
 
         // If we break out of the loop, we have reached the end of the grid
         // Thus, the grid is not an infinite loop
-        return false;
+        var distinctPath = path.Select(p => (p.x, p.y)).Distinct().ToList();
+        return (false, distinctPath.Count, distinctPath);
+    }
+
+    public override async Task<Answer> Part1(string input)
+    {
+        return TravelGrid(new CharGrid2D(input)).distinctPath;
     }
 
     public override async Task<Answer> Part2(string input)
     {
         var grid = new CharGrid2D(input);
-        var emptySpots = grid.FindAll(Empty).ToArray();
 
-        var tasks = new List<Task<int>>();
-        
-        OutputHelper.WriteLine($"Empty Spots: {emptySpots.Length}");
-        
-        foreach (var emptySpot in emptySpots)
+        var emptySpots = TravelGrid(grid).path.Where(p => grid.Grid[p.y][p.x] == Empty).ToList();
+
+        OutputHelper.WriteLine($"Empty Spots: {emptySpots.Count}");
+
+        var sum = 0;
+        Parallel.ForEach(emptySpots, t =>
         {
             var clone = new CharGrid2D(grid);
-            clone.Grid[emptySpot.y][emptySpot.x] = Obstruction;
+            clone.Grid[t.y][t.x] = Obstruction; // Block the empty spot
 
-            tasks.Add(Task.Run(() => GridIsInfiniteLoop(clone) ? 1 : 0));
-        }
+            if (TravelGrid(clone).infinite)
+            {
+                Interlocked.Increment(ref sum);
+            }
+        });
         
-        var sum = 0;
-        foreach (var task in tasks)
-        {
-            sum += await task;
-        }
-
         return sum;
     }
 }
