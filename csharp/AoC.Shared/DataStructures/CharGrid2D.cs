@@ -2,6 +2,7 @@
 using AoC.Shared.Extensions;
 using AoC.Shared.Utils;
 using Spectre.Console;
+using Xunit.Abstractions;
 
 namespace AoC.Shared.DataStructures;
 
@@ -16,20 +17,40 @@ public class CharGrid2D
     {
         Grid = input.SplitLines().Select(s => s.ToCharArray()).ToArray();
     }
-
-    public void Print()
+    
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    public CharGrid2D(CharGrid2D other, char? fill = null)
     {
+        Grid = new char[other.Height][];
+        
+        for (var y = 0; y < other.Height; y++)
+        {
+            Grid[y] = new char[other.Width];
+            for (var x = 0; x < other.Width; x++)
+            {
+                Grid[y][x] = fill ?? other.Grid[y][x];
+            }
+        }
+    }
+
+    public void Print(ITestOutputHelper outputHelper)
+    {
+        var sb = new StringBuilder();
         foreach (var row in Grid)
         {
             foreach (var col in row)
             {
-                AnsiConsole.Write(col);
+                sb.Append(col);
             }
-            AnsiConsole.WriteLine();
+            sb.AppendLine();
         }
+        
+        outputHelper.WriteLine(sb.ToString());
     }
     
-    public List<(int, int)> FindAll(char value)
+    public List<(int x, int y)> FindAll(char value)
     {
         var result = new List<(int, int)>();
         
@@ -65,5 +86,10 @@ public class CharGrid2D
         }
 
         return sb.ToString();
+    }
+    
+    public bool IsInBounds(int x, int y)
+    {
+        return x >= 0 && x < Width && y >= 0 && y < Height;
     }
 }

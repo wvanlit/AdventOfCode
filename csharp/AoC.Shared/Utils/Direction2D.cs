@@ -23,4 +23,6 @@ public record Direction2D(int DeltaX, int DeltaY)
     };
 
     public static Direction2D[] AllDirections => CardinalDirections.Concat(DiagonalDirections).ToArray();
+    
+    public Direction2D Rotate90ClockwiseForGrid() => new(-DeltaY, DeltaX);
 }
