@@ -11,19 +11,26 @@ namespace AoC.Shared;
 public abstract class SolutionBase
 {
     public ITestOutputHelper OutputHelper { get; }
-    public string Input { get; set; }
+    public string Input { get; }
     public string Name { get; }
+    
+    public bool IsTest { get; }
     
     protected SolutionBase(int year, int day, bool runTest, ITestOutputHelper outputHelper)
     {
         OutputHelper = outputHelper;
         // TODO: Add support for multiple input files
         // TODO: Add support for multiple configuration files
-        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.local.json", true)
+            .Build();
         
         Input = InputLoader.Load(config["Inputs"]!, year.ToString(), day.ToString(), runTest);
         
         Name = $"{year}_{day:D2}{(runTest ? "_test" : "")}".Trim();
+        
+        IsTest = runTest;
     }
     
     public abstract Task<Answer> Part1(string input);
@@ -56,5 +63,25 @@ public abstract class SolutionBase
         OutputHelper.WriteLine($"Part 2: {answer}");
         
         Snapshot.Match(answer, new SnapshotNameExtension(Name + "_p2"));
+    }
+
+    protected void WriteIfTest(string message)
+    {
+        if (IsTest)
+        {
+            OutputHelper.WriteLine(message);
+        }
+    }
+    
+    /// <summary>
+    /// Used to lazily write to the output.
+    /// Does not run func if not in test mode.
+    /// </summary>
+    protected void WriteIfTest(Func<string> messageFunc)
+    {
+        if (IsTest)
+        {
+            OutputHelper.WriteLine(messageFunc());
+        }
     }
 }
