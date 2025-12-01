@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AoC.2023", "AoC.2023\AoC.20
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AoC.2024", "AoC.2024\AoC.2024.csproj", "{14661C04-6C20-4B63-8C9D-38E92C59C589}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AoC.2025", "AoC.2025\AoC.2025.csproj", "{5C65854E-0338-4BEF-9B29-4DBABEC36622}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{14661C04-6C20-4B63-8C9D-38E92C59C589}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14661C04-6C20-4B63-8C9D-38E92C59C589}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14661C04-6C20-4B63-8C9D-38E92C59C589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C65854E-0338-4BEF-9B29-4DBABEC36622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C65854E-0338-4BEF-9B29-4DBABEC36622}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C65854E-0338-4BEF-9B29-4DBABEC36622}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C65854E-0338-4BEF-9B29-4DBABEC36622}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
