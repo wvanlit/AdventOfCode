@@ -7,30 +7,55 @@ using static System.Math;
 
 namespace AoC._2025;
 
-public class Day3(ITestOutputHelper testOutputHelper) : SolutionBase(2025, 3, true, testOutputHelper)
+public class Day3(ITestOutputHelper testOutputHelper) : SolutionBase(2025, 3, false, testOutputHelper)
 {
     private List<List<int>> Parse(string input) =>
-       input.SplitLines().Select(l => l.ParseAsInts("").ToList()).ToList();
+       input.SplitLines().Select(l => l.ToCharArray().Select(c => c - '0').ToList()).ToList();
 
-    private int HighestJoltage(List<int> bank, int digits = 2)
+    private long HighestJoltage(List<int> bank, int digits = 2)
     { 
-        var max = bank.Max();
+        var max = bank[..^(digits-1)].Max();
        
         if(digits == 1) { return max; }
 
         var mi = bank.IndexOf(max);
-        var prev = HighestJoltage(bank[mi..], digits - 1);
+        var prev = HighestJoltage(bank[(mi+1)..], digits - 1);
        
-        return int.Parse($"{max}{prev}");
+        return long.Parse($"{max}{prev}");
     }
 
     public override async Task<Answer> Part1(string input)
     {
-        return Answer.Failed;
+        return Parse(input).Select(l => HighestJoltage(l, digits: 2)).Sum();
     }
 
     public override async Task<Answer> Part2(string input)
     {
-        return Answer.Failed;
+        return Parse(input).Select(l => HighestJoltage(l, digits: 12)).Sum();
     }   
+    
+    [Theory]
+    [InlineData("987654321111111", 98)]
+    [InlineData("811111111111119", 89)]
+    [InlineData("818181911112111", 92)]
+    public void VerifyHighestJoltage_2_digit(string input, long expected)
+    {
+        var bank = Parse(input)[0];
+        var result = HighestJoltage(bank, 2);
+        
+        Assert.Equal(expected, result);
+    }
+    
+    [Theory]
+    [InlineData("987654321111111", 987654321111)]
+    [InlineData("811111111111119", 811111111119)]
+    [InlineData("234234234234278", 434234234278)]
+    [InlineData("818181911112111", 888911112111)]
+    public void VerifyHighestJoltage_12_digit(string input, long expected)
+    {
+        var bank = Parse(input)[0];
+        var result = HighestJoltage(bank, 12);
+        
+        Assert.Equal(expected, result);
+    }
 }
