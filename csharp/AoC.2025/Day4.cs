@@ -1,11 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using AoC.Shared;
+﻿using AoC.Shared;
 using AoC.Shared.DataStructures;
-using AoC.Shared.Extensions;
 using AoC.Shared.Utils;
-using Xunit;
 using Xunit.Abstractions;
-using static System.Math;
 
 namespace AoC._2025;
 

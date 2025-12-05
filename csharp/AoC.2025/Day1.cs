@@ -1,6 +1,5 @@
 ﻿using AoC.Shared;
 using AoC.Shared.Extensions;
-using Xunit;
 using Xunit.Abstractions;
 using static System.Math;
 
