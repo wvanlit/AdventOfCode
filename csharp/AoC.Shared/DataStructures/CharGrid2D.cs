@@ -55,7 +55,14 @@ public class CharGrid2D
     {
         if (!IsInBounds(x, y)) return null;
 
-        return new Cell(x, y, Grid[y][x]);
+        try
+        {
+            return new Cell(x, y, Grid[y][x]);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            return null;
+        }
     }
 
     public void ForEach(Action<Cell> action)
